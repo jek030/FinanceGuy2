@@ -18,6 +18,9 @@ def main():
         startSession(session, ticker)
         #print(data)
         print()
+    #getCurStockHeaderInfo(session, "AAPL")
+    #getCurStockTable(session, "AAPL")
+    #getHistoricalTableData(session, "AAPL")
        
    
 
@@ -33,7 +36,8 @@ def startSession(session, ticker):
     
     getCurStockHeaderInfo(session, ticker)
     getCurStockTable(session, ticker) 
-
+    getHistoricalTableData(session, ticker)
+    
 '''
 INPUT: response - HTML code of website
 
@@ -53,7 +57,7 @@ def getCurStockHeaderInfo(session, ticker):
     for item in list:
         elements = item.text.split("\n")
         
-        print(elements)#only prints the full name for right now 
+        print("STOCK NAME: " + elements[0])#only prints the full name for right now 
    
     """ #THIS DOESNT WORK...BUT I THINK WE DONT NEED IT SINCE WELL TAKE HSOTRIC DATA FROM TABLE
     #cant use ids since they change...
@@ -83,27 +87,60 @@ def getCurStockTable(session, ticker):
     container = response.html.find("#quote-summary", first=True)
     list = container.find("tr")
 
-    sheet = [["Previous Close", "Open"]]
-
+    stockTableSheet = []
+    i = 0
     for item in list:
         elements = item.text.split("\n")
-        print(elements)
+        #print(elements)
         name = elements[0]
-        lang = elements [1]
+        data = elements [1]
 
-        sheet.append([name, lang])
+        stockTableSheet.append([name, data])
+        if i == 1: #only check prev close, open price
+            break
+        i = i + 1
+    print("\t" + stockTableSheet[0][0] +": " + stockTableSheet[0][1]) 
+    print("\t" + stockTableSheet[1][0] +": " + stockTableSheet[1][1]) 
 
 
-def getHistoricalTableData(session, response):
+def getHistoricalTableData(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
     response = session.get(url)
 
-    container = response.html.find("td tr", first=True)
-    list = container.find("tr")
+    container = response.html.find("#Main", first=True)
+    list = container.find("td > span")
+    #print(container)
 
-    for item in list:
+    stockTableSheet = []
+
+    i = 0
+    #list is the list of spans under tds in id=Main
+    for item in list:#item is each span tag
         elements = item.text.split("\n")
-        print(elements)
+       
+        #check if element contains stock split or dividend keywords, remove if it does
+        #can also pass in a date, compare, stop going through if we reach a date specified by 1-yr 5yr, 10yr etc
+        #print(elements)
+        if ( i % 7 == 0):
+            print(elements[0])
+        elif (i % 7 == 1):
+            print("\tOpen: " + elements[0])
+        elif (i % 7 == 2):
+            print("\tHigh: " + elements[0])
+        elif (i % 7 == 3):
+            print("\tLow: " + elements[0])
+        elif (i % 7 == 4):
+            print("\tClose: " + elements[0])
+        elif (i % 7 == 5):
+            print("\tAdj. Close: " + elements[0])
+        elif (i % 7 == 6):
+            print("\tVolume: " + elements[0])
+        
+        #checks the last 2 weeks
+        if(i == 69):
+            break
+        i = i + 1
+        
 
 
 if __name__ == "__main__":
