@@ -16,8 +16,9 @@ def main():
 
     for ticker in tickerList:
         startSession(session, ticker)
-        #print(data)
+        
         print()
+    #leave for debugging...
     #getCurStockHeaderInfo(session, "AAPL")
     #getCurStockTable(session, "AAPL")
     #getHistoricalTableData(session, "AAPL")
@@ -26,24 +27,25 @@ def main():
 
 '''
 Input: ticker: ticker of a stock
-       session: HTMLSession object for connecting to webpage
+       session: HTMLSession object 
 
-Creates session of a url from a specific stock ticker. Gets relevant info of that stock ticker.
+Call submethods to gather data, return as a list.
 
 OUTPUT: data - list of relevant stock info [ticker, name, open price, prev. close price]
 '''
 def startSession(session, ticker):
-    
+    #TODO- make a data list, append to it from those functions, make sure function return appropriate info
     getCurStockHeaderInfo(session, ticker)
     getCurStockTable(session, ticker) 
     getHistoricalTableData(session, ticker)
     
 '''
-INPUT: response - HTML code of website
+INPUT: ticker: ticker of a stock
+       session: HTMLSession object 
 
 Print the info from the stock header. 
 
-info contains: Name, price, change in price, and time price was updated
+info contains: Name of stock
 
 OUTPUT: 
 '''
@@ -74,11 +76,12 @@ def getCurStockHeaderInfo(session, ticker):
 
 
 '''
-INPUT: response - HTML code of website
+INPUT: ticker: ticker of a stock
+       session: HTMLSession object 
 
-Prints the info from the stock table.
+Gets  data from daily table on webpage. 
 
-OUTPUT: 
+OUTPUT: stockTableSheet - 2d list that contains prev. close, open prices
 '''
 def getCurStockTable(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
@@ -102,7 +105,15 @@ def getCurStockTable(session, ticker):
     print("\t" + stockTableSheet[0][0] +": " + stockTableSheet[0][1]) 
     print("\t" + stockTableSheet[1][0] +": " + stockTableSheet[1][1]) 
 
+'''
+INPUT: ticker: ticker of a stock
+       session: HTMLSession object 
 
+Gets historical data from historical table on webpage. Note: mod 7 for each days data.
+
+OUTPUT: stockTableSheet - 2d list that contains date, open, high, low, close, adj close, volume for that date.
+
+'''
 def getHistoricalTableData(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
     response = session.get(url)
@@ -118,7 +129,7 @@ def getHistoricalTableData(session, ticker):
     for item in list:#item is each span tag
         elements = item.text.split("\n")
        
-        #check if element contains stock split or dividend keywords, remove if it does
+        #TODO - check if element contains stock split or dividend keywords, remove if it does
         #can also pass in a date, compare, stop going through if we reach a date specified by 1-yr 5yr, 10yr etc
         #print(elements)
         if ( i % 7 == 0):
@@ -136,7 +147,7 @@ def getHistoricalTableData(session, ticker):
         elif (i % 7 == 6):
             print("\tVolume: " + elements[0])
         
-        #checks the last 2 weeks
+        #checks the last 10 days (69)
         if(i == 69):
             break
         i = i + 1
