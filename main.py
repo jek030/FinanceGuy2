@@ -31,11 +31,8 @@ OUTPUT: data - list of relevant stock info [ticker, name, open price, prev. clos
 '''
 def startSession(session, ticker):
     
-    url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
-    response = session.get(url)
-
-    getCurStockHeaderInfo(response)
-    getCurStockTable(response) 
+    getCurStockHeaderInfo(session, ticker)
+    getCurStockTable(session, ticker) 
 
 '''
 INPUT: response - HTML code of website
@@ -46,13 +43,18 @@ info contains: Name, price, change in price, and time price was updated
 
 OUTPUT: 
 '''
-def getCurStockHeaderInfo(response):
+def getCurStockHeaderInfo(session, ticker):
+    url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
+    response = session.get(url)
+
     container = response.html.find("#quote-header-info", first=True)
     list = container.find("h1")
 
     for item in list:
         elements = item.text.split("\n")
-        print(elements) 
+        
+        print(elements)#only prints the full name for right now 
+   
     """ #THIS DOESNT WORK...BUT I THINK WE DONT NEED IT SINCE WELL TAKE HSOTRIC DATA FROM TABLE
     #cant use ids since they change...
     price = container.find("span[data-reactid]")
@@ -74,7 +76,10 @@ Prints the info from the stock table.
 
 OUTPUT: 
 '''
-def getCurStockTable(response):
+def getCurStockTable(session, ticker):
+    url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
+    response = session.get(url)
+
     container = response.html.find("#quote-summary", first=True)
     list = container.find("tr")
 
@@ -87,6 +92,18 @@ def getCurStockTable(response):
         lang = elements [1]
 
         sheet.append([name, lang])
+
+
+def getHistoricalTableData(session, response):
+    url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
+    response = session.get(url)
+
+    container = response.html.find("td tr", first=True)
+    list = container.find("tr")
+
+    for item in list:
+        elements = item.text.split("\n")
+        print(elements)
 
 
 if __name__ == "__main__":
