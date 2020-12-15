@@ -118,7 +118,7 @@ def getHistoricalTableData(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
     response = session.get(url)
 
-    container = response.html.find("#Main", first=True)
+    container = response.html.find("tbody", first=True) #tbody for no table header or footer :)
     list = container.find("td > span, td > strong")
     
 
@@ -155,7 +155,7 @@ def getHistoricalTableData(session, ticker):
                 print("\tVolume: " + elements[0])
                     
         #checks the last 10 days (69) 
-        if(i == 600): #209 is 30 days
+        if(i == 1000): #209 is 30 days
             break
         i = i + 1
         
