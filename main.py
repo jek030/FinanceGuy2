@@ -14,14 +14,14 @@ def main():
     tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD"]
     session = HTMLSession()
 
-    for ticker in tickerList:
+    """ for ticker in tickerList:
         startSession(session, ticker)
         
-        print()
+        print() """
     #leave for debugging...
-    #getCurStockHeaderInfo(session, "AAPL")
-    #getCurStockTable(session, "AAPL")
-    #getHistoricalTableData(session, "AAPL")
+    getCurStockHeaderInfo(session, "AAPL")
+    getCurStockTable(session, "AAPL")
+    getHistoricalTableData(session, "AAPL")
        
    
 
@@ -119,8 +119,8 @@ def getHistoricalTableData(session, ticker):
     response = session.get(url)
 
     container = response.html.find("#Main", first=True)
-    list = container.find("td > span")
-    #print(container)
+    list = container.find("td > span, td > strong")
+    
 
     stockTableSheet = []
 
@@ -128,27 +128,34 @@ def getHistoricalTableData(session, ticker):
     #list is the list of spans under tds in id=Main
     for item in list:#item is each span tag
         elements = item.text.split("\n")
-       
+        #print(item)
         #TODO - check if element contains stock split or dividend keywords, remove if it does
         #can also pass in a date, compare, stop going through if we reach a date specified by 1-yr 5yr, 10yr etc
         #print(elements)
-        if ( i % 7 == 0):
-            print(elements[0])
-        elif (i % 7 == 1):
-            print("\tOpen: " + elements[0])
-        elif (i % 7 == 2):
-            print("\tHigh: " + elements[0])
-        elif (i % 7 == 3):
-            print("\tLow: " + elements[0])
-        elif (i % 7 == 4):
-            print("\tClose: " + elements[0])
-        elif (i % 7 == 5):
-            print("\tAdj. Close: " + elements[0])
-        elif (i % 7 == 6):
-            print("\tVolume: " + elements[0])
-        
-        #checks the last 10 days (69)
-        if(i == 69):
+        if (not elements[0].lower().find("dividend") ):
+                print("\t" + elements[0]) #dividend or stock split
+                i = i + 4 #to restart mod operation
+        elif (not elements[0].lower().find("stock") ):
+                print("\t" + elements[0]) #dividend or stock split
+                i = i + 4 #to restart mod operation
+        else:
+            if ( i % 7 == 0):
+                print(elements[0]) #date
+            elif (i % 7 == 1):
+                print("\tOpen: " + elements[0])
+            elif (i % 7 == 2):
+                print("\tHigh: " + elements[0])
+            elif (i % 7 == 3):
+                print("\tLow: " + elements[0])
+            elif (i % 7 == 4):
+                print("\tClose: " + elements[0])
+            elif (i % 7 == 5):
+                print("\tAdj. Close: " + elements[0])
+            elif (i % 7 == 6):
+                print("\tVolume: " + elements[0])
+                    
+        #checks the last 10 days (69) 
+        if(i == 600): #209 is 30 days
             break
         i = i + 1
         
