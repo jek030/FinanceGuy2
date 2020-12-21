@@ -20,9 +20,7 @@ def main():
         
         print() """
     #leave for debugging...
-    getCurStockHeaderInfo(session, "AAPL")
-    getCurStockTable(session, "AAPL")
-    getHistoricalTableData(session, "AAPL")
+    startSession(session,"AAPL")
        
    
 
@@ -32,14 +30,44 @@ Input: ticker: ticker of a stock
 
 Call submethods to gather data, return as a list.
 
-OUTPUT: data - list of relevant stock info [ticker, name, open price, prev. close price]
+OUTPUT: stockDataList - list of relevant stock info [name, [Prev close, cur open], [0 days ago prices], [1 days ago prices],[2 days ago...]...]
+                      - NOTE: a day might have 2 lists if theres a dividend or stock split, but those slist will be len 3 instead of 7.
 '''
 def startSession(session, ticker):
-    #TODO- make a data list, append to it from those functions, make sure function return appropriate info
-    getCurStockHeaderInfo(session, ticker)
-    getCurStockTable(session, ticker) 
-    getHistoricalTableData(session, ticker)
     
+    stockDataList = []
+    #only appends the stock name, ticker
+    stockDataList += [getCurStockHeaderInfo(session, ticker)]
+    #gets current days data
+    stockDataList += [getCurStockTable(session, ticker)]
+    #gets historical data
+    stockDataList += getHistoricalTableData(session, ticker)
+
+    for i in range(len(stockDataList)):
+        if (len(stockDataList[i]) == 7): #everything else
+            print(str(stockDataList[i][0])) #date
+            print("\tOpen: " + str(stockDataList[i][1]))
+            print("\tHigh: " + str(stockDataList[i][2]))
+            print("\tLow: " + str(stockDataList[i][3]))
+            print("\tClose: " + str(stockDataList[i][4]))
+            print("\tADJ Close: " + str(stockDataList[i][5]))
+            print("\tVolume: " + str(stockDataList[i][6]))
+
+        elif (len(stockDataList[i]) == 1): #[0]
+            print("STOCK NAME: "+ str(stockDataList[i][0]))
+        elif (len(stockDataList[i]) == 2): # [1]
+            print("PREV CLOSE: "+ str(stockDataList[i][0]))
+            print("TODAYS OPEN: " + str(stockDataList[i][1]))
+        elif (len(stockDataList[i]) == 3): # dividends or stock splits
+            print(str(stockDataList[i][0])) #date
+            print("\t" + str(stockDataList[i][1]))
+            print("\t" + str(stockDataList[i][2]))
+
+            
+    
+
+
+
 '''
 INPUT: ticker: ticker of a stock
        session: HTMLSession object 
@@ -48,7 +76,7 @@ Print the info from the stock header.
 
 info contains: Name of stock
 
-OUTPUT: 
+OUTPUT: stockDataList - list containing only the stocks full name, ticker
 '''
 def getCurStockHeaderInfo(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
@@ -57,11 +85,14 @@ def getCurStockHeaderInfo(session, ticker):
     container = response.html.find("#quote-header-info", first=True)
     list = container.find("h1")
 
+    stockDataList = []
     for item in list:
         elements = item.text.split("\n")
+        stockDataList.append(elements[0])
         
-        print("STOCK NAME: " + elements[0])#only prints the full name for right now 
    
+    return stockDataList
+
     """ #THIS DOESNT WORK...BUT I THINK WE DONT NEED IT SINCE WELL TAKE HSOTRIC DATA FROM TABLE
     #cant use ids since they change...
     price = container.find("span[data-reactid]")
@@ -76,13 +107,16 @@ def getCurStockHeaderInfo(session, ticker):
 
 
 
+
+
+
 '''
 INPUT: ticker: ticker of a stock
        session: HTMLSession object 
 
 Gets  data from daily table on webpage. 
 
-OUTPUT: stockTableSheet - 2d list that contains prev. close, open prices
+OUTPUT: [stockTableSheet[0][1], stockTableSheet[1][1]] - 2D list that contains prev close, open prices
 '''
 def getCurStockTable(session, ticker):
     url = "https://finance.yahoo.com/quote/" + ticker + "?p=" + ticker + "&.tsrc=fin-srch"
@@ -103,66 +137,89 @@ def getCurStockTable(session, ticker):
         if i == 1: #only check prev close, open price
             break
         i = i + 1
-    print("\t" + stockTableSheet[0][0] +": " + stockTableSheet[0][1]) 
-    print("\t" + stockTableSheet[1][0] +": " + stockTableSheet[1][1]) 
-
+   
+    
+    return [stockTableSheet[0][1], stockTableSheet[1][1]]
 '''
 INPUT: ticker: ticker of a stock
        session: HTMLSession object 
 
 Gets historical data from historical table on webpage. Note: mod 7 for each days data.
 
-OUTPUT: stockTableSheet - 2d list that contains date, open, high, low, close, adj close, volume for that date.
+OUTPUT: stockTableSheet - 2d list that contains [date, open, high, low, close, adj close, volume] for that date range.
 
 '''
 def getHistoricalTableData(session, ticker):
+    # TODO: we could pass in arg3 as a number of days, multiplt that number by 7 and subtract by 1 and we have the mod number : if (i == ??) below
+
     url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
     response = session.get(url)
 
     container = response.html.find("tbody", first=True) #tbody for no table header or footer :)
     list = container.find("td > span, td > strong")
     
-
+    #stockTableSheet is a list of the day's prices (dayPriceList).
     stockTableSheet = []
-
+    # dayPriceList := [DATE, OPEN, HIGH, LOW, ADJ. CLOSE, VOLUME]
+    # or 
+    # dayPriceList := [DATE, AMOUNT, DIVIDEND or STOCK SPLIT]
+    dayPriceList = []
     i = 0
     #list is the list of spans under tds in id=Main
     for item in list:#item is each span tag
         elements = item.text.split("\n")
-        #print(item)
-        #TODO - check if element contains stock split or dividend keywords, remove if it does
-        #can also pass in a date, compare, stop going through if we reach a date specified by 1-yr 5yr, 10yr etc
+        #check if we have a days worth of data and apennd that day, exclude 0 b/c empty list, reset list
+        if (i % 7 == 0 and i != 0):
+            stockTableSheet.append(dayPriceList)
+            dayPriceList = []
+        #check if element contains stock split or dividend keywords, remove if it does
         if (item.tag == "strong"):
-            print("\t" + elements[0]) #dividend price or stock split amount
+            #print("\t" + elements[0]) #dividend price or stock split amount
+            dayPriceList.append(elements[0])
         elif(item.tag == "span"):
             if (not elements[0].lower().find("dividend") ):
-                    print("\t" + elements[0]) #dividend or stock split
+                    #print("\t" + elements[0]) #dividend 
+                    dayPriceList.append(elements[0])
                     i = i + 4 #to restart mod operation
             elif (not elements[0].lower().find("stock") ):
-                    print("\t" + elements[0]) #dividend or stock split
+                    #print("\t" + elements[0]) #stock split
+                    dayPriceList.append(elements[0])
                     i = i + 4 #to restart mod operation
+                    #restart count
             else:
                 if ( i % 7 == 0):
-                    print(elements[0]) #date
-                elif (i % 7 == 1):
-                    print("\tOpen: " + elements[0])
-                elif (i % 7 == 2):
-                    print("\tHigh: " + elements[0])
-                elif (i % 7 == 3):
-                    print("\tLow: " + elements[0])
-                elif (i % 7 == 4):
-                    print("\tClose: " + elements[0])
-                elif (i % 7 == 5):
-                    print("\tAdj. Close: " + elements[0])
-                elif (i % 7 == 6):
-                    print("\tVolume: " + elements[0])
+                    #print(elements[0]) #date
+                    dayPriceList.append(elements[0])
                     
+                elif (i % 7 == 1):
+                    #print("\tOpen: " + elements[0])
+                    dayPriceList.append(elements[0])
+                elif (i % 7 == 2):
+                    #print("\tHigh: " + elements[0])
+                    dayPriceList.append(elements[0])
+                elif (i % 7 == 3):
+                    #print("\tLow: " + elements[0])
+                    dayPriceList.append(elements[0])
+                elif (i % 7 == 4):
+                    #print("\tClose: " + elements[0])
+                    dayPriceList.append(elements[0])
+                elif (i % 7 == 5):
+                    #print("\tAdj. Close: " + elements[0])
+                    dayPriceList.append(elements[0])
+                elif (i % 7 == 6):
+                    #print("\tVolume: " + elements[0])
+                    dayPriceList.append(elements[0])
+                   
         #checks the last 10 days (69) 
-        if(i == 600): #209 is 30 days
+        if(i == 219): #210 is 30 days
             break
         i = i + 1
-        
+        #print("Daypricelist: " + str(dayPriceList))
+    
+    """ for i in range(len(stockTableSheet)):
 
+        print(stockTableSheet[i]) """
+    return stockTableSheet
 
 if __name__ == "__main__":
     main()
