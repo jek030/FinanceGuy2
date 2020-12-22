@@ -6,7 +6,11 @@
 # https://realpython.com/beautiful-soup-web-scraper-python/
 # https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch
 # https://requests.readthedocs.io/projects/requests-html/en/latest/ -- **requests_html documentation**
-
+#
+# NOTES:
+#       - using l1 += l2 for a list adds all the items of l2 to l1, where .append() adds the actualy list l2 as an item of l1. 
+#       - close prices are actually most recent live prices if its the close price of the current trading day
+#
 import requests_html
 from requests_html import HTMLSession
 
@@ -15,25 +19,26 @@ def main():
     tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD"]
     session = HTMLSession()
 
-    """ for ticker in tickerList:
-        startSession(session, ticker)
+    for ticker in tickerList:
+        startSession(session, ticker, 35)
         
-        print() """
+        print()
     #leave for debugging...
-    startSession(session,"AAPL")
+    #startSession(session,"AAPL")
        
    
 
 '''
 Input: ticker: ticker of a stock
        session: HTMLSession object 
+       numberOfDays: integer representing number of days we want to do our percent return on 
 
 Call submethods to gather data, return as a list.
 
-OUTPUT: stockDataList - list of relevant stock info [name, [Prev close, cur open], [0 days ago prices], [1 days ago prices],[2 days ago...]...]
+OUTPUT: stockDataList - list of relevant stock info [name, [Prev close, cur open], [0 days ago prices], [1 days ago prices],[2 days ago...]...] ---WRONG
                       - NOTE: a day might have 2 lists if theres a dividend or stock split, but those slist will be len 3 instead of 7.
 '''
-def startSession(session, ticker):
+def startSession(session, ticker, numberOfDays):
     
     stockDataList = []
     #only appends the stock name, ticker
@@ -41,8 +46,10 @@ def startSession(session, ticker):
     #gets current days data
     stockDataList += [getCurStockTable(session, ticker)]
     #gets historical data
-    stockDataList += getHistoricalTableData(session, ticker)
+    stockDataList += getHistoricalTableData(session, ticker, numberOfDays)
 
+    #need to make a list of prices that excludes dividensds and stock splits
+    pricesOnly = []
     for i in range(len(stockDataList)):
         if (len(stockDataList[i]) == 7): #everything else
             print(str(stockDataList[i][0])) #date
@@ -52,6 +59,8 @@ def startSession(session, ticker):
             print("\tClose: " + str(stockDataList[i][4]))
             print("\tADJ Close: " + str(stockDataList[i][5]))
             print("\tVolume: " + str(stockDataList[i][6]))
+            pricesOnly.append([stockDataList[i][0], stockDataList[i][1], stockDataList[i][2], stockDataList[i][3], stockDataList[i][4], stockDataList[i][5], stockDataList[i][6]])
+            
 
         elif (len(stockDataList[i]) == 1): #[0]
             print("STOCK NAME: "+ str(stockDataList[i][0]))
@@ -63,9 +72,17 @@ def startSession(session, ticker):
             print("\t" + str(stockDataList[i][1]))
             print("\t" + str(stockDataList[i][2]))
 
-            
-    
-
+   
+    #get todays price and the price of the alst date were looking at        
+    #percentReturn = ((float(stockDataList[2][4]) - float(stockDataList[len(stockDataList)-1][4]))/ float(stockDataList[len(stockDataList)-1][4])) * 100
+    #print(stockDataList[2][4])
+    #print(stockDataList[len(stockDataList)-1][4])
+    #print(pricesOnly[0][4])
+    #print(pricesOnly[len(pricesOnly)-1][4])
+    percentReturn = ((float(pricesOnly[0][4]) - float(pricesOnly[len(pricesOnly)-1][4]))/ float(pricesOnly[len(pricesOnly)-1][4])) * 100
+    print("% Return over " + str(numberOfDays) + " days: " + str(percentReturn) + " %")
+    stockDataList.append([percentReturn]) #need to append % chng as list so we can iterate for table or printing
+    return stockDataList
 
 
 '''
@@ -143,13 +160,14 @@ def getCurStockTable(session, ticker):
 '''
 INPUT: ticker: ticker of a stock
        session: HTMLSession object 
+       numberOfDays: integer representing number of days we want to do our percent return on 
 
 Gets historical data from historical table on webpage. Note: mod 7 for each days data.
 
 OUTPUT: stockTableSheet - 2d list that contains [date, open, high, low, close, adj close, volume] for that date range.
 
 '''
-def getHistoricalTableData(session, ticker):
+def getHistoricalTableData(session, ticker, numberOfDays):
     # TODO: we could pass in arg3 as a number of days, multiplt that number by 7 and subtract by 1 and we have the mod number : if (i == ??) below
 
     url = "https://finance.yahoo.com/quote/" + ticker + "/history?p=" + ticker 
@@ -172,11 +190,12 @@ def getHistoricalTableData(session, ticker):
         if (i % 7 == 0 and i != 0):
             stockTableSheet.append(dayPriceList)
             dayPriceList = []
-        #check if element contains stock split or dividend keywords, remove if it does
+        #strong tags are bold letters, contain dividend or split data
         if (item.tag == "strong"):
             #print("\t" + elements[0]) #dividend price or stock split amount
             dayPriceList.append(elements[0])
         elif(item.tag == "span"):
+            #check if element contains stock split or dividend keywords, remove if it does
             if (not elements[0].lower().find("dividend") ):
                     #print("\t" + elements[0]) #dividend 
                     dayPriceList.append(elements[0])
@@ -211,7 +230,9 @@ def getHistoricalTableData(session, ticker):
                     dayPriceList.append(elements[0])
                    
         #checks the last 10 days (69) 
-        if(i == 219): #210 is 30 days
+        temp = (numberOfDays * 7) - 1
+       
+        if(i == temp): #210 is 30 days
             break
         i = i + 1
         #print("Daypricelist: " + str(dayPriceList))
