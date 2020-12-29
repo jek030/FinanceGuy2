@@ -1,31 +1,47 @@
+//asynchronously load the file, change true to false for synchronous
+//https://www.artylope.com/blog/2016/12/28/load-a-local-json.html
+function loadJSON(callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", 'temp.json', true);
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState == 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+
 
 
 function createTable(){
+    
+    loadJSON(function(data) {
+        var stockList = JSON.parse(data);
+        stockList = stockList["stocks"];
+           
+            var myTable= "<table><tr><td style='width: 100px; color: red;'><strong>Stock</strong></td>";
+            myTable+= "<td style='width: 100px; color: red; text-align: right;'><strong>10-Day % Return</strong></td>";
+            myTable+="<td style='width: 100px; color: red; text-align: right;'>Col Head 3</td></tr>";
 
 
-    var myArray    = new Array();
-    myArray[0] = 1;
-    myArray[1] = 2.218;
-    myArray[2] = 33;
-    myArray[3] = 114.94;
-    myArray[4] = 5;
-    myArray[5] = 33;
-    myArray[6] = 114.980;
-    myArray[7] = 5;
+              for (var i=0; i<stockList.length; i++) {
+                myTable+="<tr><td style='width: 100px;'>" + stockList[i]["stock"] + ":</td>";
+                
+                myTable+="<td style='width: 100px; text-align: right;'>" + stockList[i]["10 day return"].toFixed(2) + "</td>";
+                myTable+="<td style='width: 100px; text-align: right;'>" + stockList[i] + "</td></tr>"; 
+            }  
+            
+            myTable+="</table>";
 
-    var myTable= "<table><tr><td style='width: 100px; color: red;'><strong>Stock</strong></td>";
-    myTable+= "<td style='width: 100px; color: red; text-align: right;'><strong>% Return</strong></td>";
-    myTable+="<td style='width: 100px; color: red; text-align: right;'>Col Head 3</td></tr>";
-
-
-
-    for (var i=0; i<8; i++) {
-        myTable+="<tr><td style='width: 100px;'>Number " + i + " is:</td>";
-        myArray[i] = myArray[i].toFixed(3);//makes everything 3 decimal places
-        myTable+="<td style='width: 100px; text-align: right;'>" + myArray[i] + "</td>";
-        myTable+="<td style='width: 100px; text-align: right;'>" + myArray[i] + "</td></tr>";
-    }  
-    myTable+="</table>";
-
-    document.write( myTable);
+            var tempDiv = document.createElement('div');
+            tempDiv.className = "inner";
+            tempDiv.innerHTML = myTable;
+        
+            var prependedData = $('#one').children().last()[0];
+            document.getElementById("one").insertBefore(tempDiv,prependedData);
+    });
+   
+    
 }
