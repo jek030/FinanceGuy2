@@ -3,29 +3,39 @@
 
 # RESOURCES
 # https://www.w3schools.com/cssref/css_selectors.asp  -- **css selectors**
-# https://realpython.com/beautiful-soup-web-scraper-python/
-# https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch
+# https://realpython.com/beautiful-soup-web-scraper-python/ -- *how to webscrape**
+# https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch -- ** yahoo stock link, replace ticker for any stock**
 # https://requests.readthedocs.io/projects/requests-html/en/latest/ -- **requests_html documentation**
+# https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON -- **json info**
+# https://stackabuse.com/reading-and-writing-json-to-a-file-in-python/ -- ** python -> json**
 #
 # NOTES:
 #       - using l1 += l2 for a list adds all the items of l2 to l1, where .append() adds the actualy list l2 as an item of l1. 
 #       - close prices are actually most recent live prices if its the close price of the current trading day
 #
 import requests_html
+import json
 from requests_html import HTMLSession
 
 def main():
 
-    tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD"]
+   # tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD"]
+    tickerList = ["AAPL"]
     session = HTMLSession()
-
+    #create json outline....
+    
     for ticker in tickerList:
-        startSession(session, ticker, 35)
-        
+        temp = startSession(session, ticker, 10)
+        #run start session for 5 day, 30 day, 185 day, 356 day returns etc
+        #append to json element
+        #then we will have ajson element with all stocks and respective returns to send to js script
+        print(temp)
+        jDict = {'stocks':[{'stock':temp[0][0], '10 day return':temp[len(temp)-1][0]}]}
         print()
-    #leave for debugging...
-    #startSession(session,"AAPL")
-       
+        
+    
+    with open('temp.json','w') as outfile:
+       json.dump(jDict, outfile, indent=4)
    
 
 '''
