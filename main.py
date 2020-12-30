@@ -19,18 +19,18 @@ from requests_html import HTMLSession
 
 def main():
 
-   # tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD"]
-    tickerList = ["AAPL"]
+    tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD", "PLUG","CRM", "NVDA", "PLTR", "UBER","PYPL"]
+   # tickerList = ["AAPL"]
     session = HTMLSession()
     #create json outline....
-    
+    jDict = {"stocks":[]}
     for ticker in tickerList:
-        temp = startSession(session, ticker, 10)
+        temp = startSession(session, ticker, 365)
         #run start session for 5 day, 30 day, 185 day, 356 day returns etc
         #append to json element
         #then we will have ajson element with all stocks and respective returns to send to js script
-        print(temp)
-        jDict = {'stocks':[{'stock':temp[0][0], '10 day return':temp[len(temp)-1][0]}]}
+        #print(temp)
+        jDict["stocks"].append({'stock':temp[0][0], '10 day return':temp[len(temp)-2][0],'30 day return':temp[len(temp)-1][0]})
         print()
         
     
@@ -89,9 +89,16 @@ def startSession(session, ticker, numberOfDays):
     #print(stockDataList[len(stockDataList)-1][4])
     #print(pricesOnly[0][4])
     #print(pricesOnly[len(pricesOnly)-1][4])
-    percentReturn = ((float(pricesOnly[0][4]) - float(pricesOnly[len(pricesOnly)-1][4]))/ float(pricesOnly[len(pricesOnly)-1][4])) * 100
-    print("% Return over " + str(numberOfDays) + " days: " + str(percentReturn) + " %")
-    stockDataList.append([percentReturn]) #need to append % chng as list so we can iterate for table or printing
+    percentReturn10 = ((float(pricesOnly[0][4]) - float(pricesOnly[9][4]))/ float(pricesOnly[9][4])) * 100
+    percentReturn30 = ((float(pricesOnly[0][4]) - float(pricesOnly[29][4]))/ float(pricesOnly[29][4])) * 100
+    #percentReturn365 = ((float(pricesOnly[0][4]) - float(pricesOnly[len(pricesOnly)-1][4]))/ float(pricesOnly[len(pricesOnly)-1][4])) * 100
+    #change len to 364 when we figure out scraping issue
+    print("% Return over 10 business days: " + str(percentReturn10) + " %")
+    print("% Return over 30 business days: " + str(percentReturn30) + " %")
+    #print("% Return over 365 business days: " + str(percentReturn365) + " %")
+    stockDataList.append([percentReturn10]) #need to append % chng as list so we can iterate for table or printing
+    stockDataList.append([percentReturn30])
+    #stockDataList.append([percentReturn365])
     return stockDataList
 
 
