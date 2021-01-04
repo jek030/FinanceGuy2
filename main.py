@@ -19,10 +19,14 @@ from requests_html import HTMLSession
 
 def main():
 
-    tickerList = ["AMZN","AAPL", "MSFT", "GLSI", "IBM", "AMD", "PLUG","CRM", "NVDA", "PLTR", "UBER","PYPL"]
    # tickerList = ["AAPL"]
     session = HTMLSession()
-    #create json outline....
+   
+    getJamesCurStocks(session)
+   
+def getJamesCurStocks(session):
+    tickerList = ["AMZN","AAPL", "BABA", "PLUG"]
+     #create json outline....
     jDict = {"stocks":[]}
     for ticker in tickerList:
         temp = startSession(session, ticker, 365)
@@ -34,9 +38,10 @@ def main():
         print()
         
     
-    with open('temp.json','w') as outfile:
+    with open('jamesCurStocks.json','w') as outfile:
        json.dump(jDict, outfile, indent=4)
-   
+
+
 
 '''
 Input: ticker: ticker of a stock

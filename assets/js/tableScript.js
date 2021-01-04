@@ -1,9 +1,9 @@
 //asynchronously load the file, change true to false for synchronous
 //https://www.artylope.com/blog/2016/12/28/load-a-local-json.html
-function loadJSON(callback) {
+function loadJSON(file, callback) {
     var rawFile = new XMLHttpRequest();
     rawFile.overrideMimeType("application/json");
-    rawFile.open("GET", 'temp.json', true);
+    rawFile.open("GET", file, true);
     rawFile.onreadystatechange = function() {
         if (rawFile.readyState == 4 && rawFile.status == "200") {
             callback(rawFile.responseText);
@@ -15,9 +15,9 @@ function loadJSON(callback) {
 
 
 
-function createTable(){
+function createJamesCurStocksTable(){
     
-    loadJSON(function(data) {
+    loadJSON('jamesCurStocks.json', function(data) {
         var stockList = JSON.parse(data);
         stockList = stockList["stocks"];
            
