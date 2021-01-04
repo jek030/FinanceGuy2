@@ -19,7 +19,7 @@ from requests_html import HTMLSession
 
 def main():
 
-    tickerList = ["AAPL", "MSFT", "GLSI", "IBM", "AMD", "PLUG","CRM", "NVDA", "PLTR", "UBER","PYPL"]
+    tickerList = ["AMZN","AAPL", "MSFT", "GLSI", "IBM", "AMD", "PLUG","CRM", "NVDA", "PLTR", "UBER","PYPL"]
    # tickerList = ["AAPL"]
     session = HTMLSession()
     #create json outline....
@@ -89,8 +89,8 @@ def startSession(session, ticker, numberOfDays):
     #print(stockDataList[len(stockDataList)-1][4])
     #print(pricesOnly[0][4])
     #print(pricesOnly[len(pricesOnly)-1][4])
-    percentReturn10 = ((float(pricesOnly[0][4]) - float(pricesOnly[9][4]))/ float(pricesOnly[9][4])) * 100
-    percentReturn30 = ((float(pricesOnly[0][4]) - float(pricesOnly[29][4]))/ float(pricesOnly[29][4])) * 100
+    percentReturn10 = ((float(pricesOnly[0][4].replace(',','')) - float(pricesOnly[9][4].replace(',','')))/ float(pricesOnly[9][4].replace(',',''))) * 100
+    percentReturn30 = ((float(pricesOnly[0][4].replace(',','')) - float(pricesOnly[29][4].replace(',','')))/ float(pricesOnly[29][4].replace(',',''))) * 100
     #percentReturn365 = ((float(pricesOnly[0][4]) - float(pricesOnly[len(pricesOnly)-1][4]))/ float(pricesOnly[len(pricesOnly)-1][4])) * 100
     #change len to 364 when we figure out scraping issue
     print("% Return over 10 business days: " + str(percentReturn10) + " %")
