@@ -23,7 +23,25 @@ def main():
     session = HTMLSession()
    
     getJamesCurStocks(session)
+    getSandPStocks(session)
    
+def getSandPStocks(session):
+    tickerList = ["MMM","ABT", "ABBV", "ABMD", "ACN", "ATVI", "ADBE", "AMD", "AAP", "AES"]
+     #create json outline....
+    jDict = {"stocks":[]}
+    for ticker in tickerList:
+        temp = startSession(session, ticker, 365)
+        #run start session for 5 day, 30 day, 185 day, 356 day returns etc
+        #append to json element
+        #then we will have ajson element with all stocks and respective returns to send to js script
+        #print(temp)
+        jDict["stocks"].append({'stock':temp[0][0], '10 day return':temp[len(temp)-2][0],'30 day return':temp[len(temp)-1][0]})
+        print()
+        
+    
+    with open('SandPstocks.json','w') as outfile:
+       json.dump(jDict, outfile, indent=4)
+
 def getJamesCurStocks(session):
     tickerList = ["AMZN","AAPL", "BABA", "PLUG"]
      #create json outline....
