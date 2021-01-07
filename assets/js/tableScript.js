@@ -48,6 +48,7 @@ function createSandPStocksTable(){
     
     loadJSON('SandPstocks.json', function(data) {
         var stockList = JSON.parse(data);
+        console.log(stockList)
         stockList = stockList["stocks"];
            $('#one').children().remove(".table");
             var myTable= "<table><tr><td style='width: 100px; color: red;'><strong>Stock</strong></td>";
@@ -57,9 +58,8 @@ function createSandPStocksTable(){
 
               for (var i=0; i<stockList.length; i++) {
                 myTable+="<tr><td style='width: 100px;'>" + stockList[i]["stock"] + ":</td>";
-                
-                myTable+="<td style='width: 100px; text-align: right;'>" + stockList[i]["10 day return"].toFixed(2) + "%</td>";
-                myTable+="<td style='width: 100px; text-align: right;'>" + stockList[i]["30 day return"].toFixed(2) + "%</td></tr>"; 
+                myTable+="<td style='width: 100px; text-align: right;'>" + Number(stockList[i]["10 day return"]).toFixed(2) + "%</td>";
+                myTable+="<td style='width: 100px; text-align: right;'>" + Number(stockList[i]["30 day return"]).toFixed(2) + "%</td></tr>"; 
                 //if table disappears something above is wrong
             }  
             
