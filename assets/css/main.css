@@ -2538,6 +2538,15 @@
 
 		}
 
+		section .table {
+			max-width: 65em;
+			width: calc(100% - 6em);
+			margin: 0 auto;
+			min-height: 18em;
+			max-height: 20em;
+			overflow-y: auto;
+		}
+
 	header p {
 		position: relative;
 		margin: 0 0 1.5em 0;

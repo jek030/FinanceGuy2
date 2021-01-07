@@ -1,0 +1,19 @@
+{
+    "stocks": [
+        {
+            "stock": "Amazon.com, Inc. (AMZN)",
+            "10 day return": -0.7255271923573238,
+            "30 day return": 1.4143409684226702
+        },
+        {
+            "stock": "Apple Inc. (AAPL)",
+            "10 day return": -0.03054367745878166,
+            "30 day return": 13.675436311539451
+        },
+        {
+            "stock": "Plug Power Inc. (PLUG)",
+            "10 day return": 30.852241283895953,
+            "30 day return": 76.98353293413174
+        }
+    ]
+}

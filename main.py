@@ -20,13 +20,35 @@ from requests_html import HTMLSession
 def main():
     session = HTMLSession()
     SandP_tickers = getSandPTickers(session)
-    
+    DOW_tickers = getDOWTickers(session)
    
     #createJamesCurStocksJSON(session)
-    createSandPStocksJSON(session, SandP_tickers)
+    createDOWStocksJSON(session, DOW_tickers)
+    #createSandPStocksJSON(session, SandP_tickers)
 
    
+'''
+Input: session: HTMLSession object 
+
+Creates a JSON file of DOW Jones Industrial stocks.
+
+OUTPUT: 
+'''
+def createDOWStocksJSON(session, tickerList):
     
+     #create json outline....
+    jDict = {"stocks":[]}
+    for ticker in tickerList:
+        temp = startSession(session, ticker, 365)
+       
+        jDict["stocks"].append({'stock':temp[0][0], '10 day return':temp[len(temp)-2][0],'30 day return':temp[len(temp)-1][0]})
+        print()
+        
+    
+    with open('DOWstocks.json','w') as outfile:
+       json.dump(jDict, outfile, indent=4)
+
+
 '''
 Input: session: HTMLSession object 
 
@@ -59,11 +81,11 @@ Creates a JSON file of a certain list of stocks.
 OUTPUT: 
 '''
 def createJamesCurStocksJSON(session):
-    tickerList = ["AMZN","AAPL", "BABA", "PLUG"]
+    tickerList = ["AMZN","AAPL",  "PLUG"]
      #create json outline....
     jDict = {"stocks":[]}
     for ticker in tickerList:
-        temp = startSession(session, ticker, 30)
+        temp = startSession(session, ticker, 31)
         #run start session for 5 day, 30 day, 185 day, 356 day returns etc
         #append to json element
         #then we will have ajson element with all stocks and respective returns to send to js script
@@ -194,11 +216,14 @@ OUTPUT: tickers[1:] - list of tickers. NOTE: [1:0] because scraping takes the ta
 
 '''
 def getDOWTickers(session):
-    url = "https://www.marketwatch.com/tools/quotes/lookup.asp?lookup=DOW*"
+    url = "https://finance.yahoo.com/quote/%5EDJI/components/"
     response = session.get(url)
 
-    container = response.html.find("#symbollookup", first=True)
+    container = response.html.find("tbody", first=True)
+ 
     list = container.find("tr")
+    #list = container.find("section")
+    
     tickers = []
     for item in list:
         elements = item.text.split("\n")

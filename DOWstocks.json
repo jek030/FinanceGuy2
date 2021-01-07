@@ -1,0 +1,149 @@
+{
+    "stocks": [
+        {
+            "stock": "The Travelers Companies, Inc. (TRV)",
+            "10 day return": 0.8118883653497678,
+            "30 day return": 1.9649534423344872
+        },
+        {
+            "stock": "Dow Inc. (DOW)",
+            "10 day return": 6.867579908675796,
+            "30 day return": 1.3511172700502359
+        },
+        {
+            "stock": "Honeywell International Inc. (HON)",
+            "10 day return": 1.2476784608790916,
+            "30 day return": 2.2704314781855923
+        },
+        {
+            "stock": "Caterpillar Inc. (CAT)",
+            "10 day return": 8.861114224862686,
+            "30 day return": 9.796495195025429
+        },
+        {
+            "stock": "Verizon Communications Inc. (VZ)",
+            "10 day return": -0.7293080054274079,
+            "30 day return": -3.479551451187334
+        },
+        {
+            "stock": "International Business Machines Corporation (IBM)",
+            "10 day return": 4.108151735270383,
+            "30 day return": 3.673042919144838
+        },
+        {
+            "stock": "The Walt Disney Company (DIS)",
+            "10 day return": 2.8983002016709887,
+            "30 day return": 17.882368473166547
+        },
+        {
+            "stock": "Amgen Inc. (AMGN)",
+            "10 day return": 4.969947070960802,
+            "30 day return": 6.150775650911731
+        },
+        {
+            "stock": "Johnson & Johnson (JNJ)",
+            "10 day return": 5.548242727392396,
+            "30 day return": 11.468687009105443
+        },
+        {
+            "stock": "McDonald's Corporation (MCD)",
+            "10 day return": -0.018866144703339527,
+            "30 day return": -3.518274088571307
+        },
+        {
+            "stock": "Chevron Corporation (CVX)",
+            "10 day return": 5.286497841054967,
+            "30 day return": -5.6473541100188305
+        },
+        {
+            "stock": "The Home Depot, Inc. (HD)",
+            "10 day return": -1.3157407064230426,
+            "30 day return": -2.5794884929201314
+        },
+        {
+            "stock": "Visa Inc. (V)",
+            "10 day return": 4.145153433999021,
+            "30 day return": 1.9696680656238055
+        },
+        {
+            "stock": "American Express Company (AXP)",
+            "10 day return": 4.027362120564338,
+            "30 day return": 1.054904892432923
+        },
+        {
+            "stock": "The Boeing Company (BA)",
+            "10 day return": -3.177204242341477,
+            "30 day return": -2.6454299967961923
+        },
+        {
+            "stock": "salesforce.com, inc. (CRM)",
+            "10 day return": -4.15512465373962,
+            "30 day return": -16.43152890660941
+        },
+        {
+            "stock": "The Procter & Gamble Company (PG)",
+            "10 day return": 1.8409857708669435,
+            "30 day return": 0.39042730099052275
+        },
+        {
+            "stock": "The Coca-Cola Company (KO)",
+            "10 day return": -5.877920120572716,
+            "30 day return": -6.125516723036449
+        },
+        {
+            "stock": "Cisco Systems, Inc. (CSCO)",
+            "10 day return": 1.306894997746729,
+            "30 day return": 5.515137291715563
+        },
+        {
+            "stock": "UnitedHealth Group Incorporated (UNH)",
+            "10 day return": 8.128202849610474,
+            "30 day return": 8.636647718817887
+        },
+        {
+            "stock": "NIKE, Inc. (NKE)",
+            "10 day return": 2.250282167042888,
+            "30 day return": 7.609502598366742
+        },
+        {
+            "stock": "Merck & Co., Inc. (MRK)",
+            "10 day return": 5.341023069207611,
+            "30 day return": 4.841527327177434
+        },
+        {
+            "stock": "Intel Corporation (INTC)",
+            "10 day return": 12.067854842173068,
+            "30 day return": 11.018932142097427
+        },
+        {
+            "stock": "The Goldman Sachs Group, Inc. (GS)",
+            "10 day return": 13.725872489764082,
+            "30 day return": 22.79999999999999
+        },
+        {
+            "stock": "3M Company (MMM)",
+            "10 day return": -2.4541640324156617,
+            "30 day return": -4.156313530607642
+        },
+        {
+            "stock": "Microsoft Corporation (MSFT)",
+            "10 day return": -1.2351823364401493,
+            "30 day return": 2.0714486112409882
+        },
+        {
+            "stock": "JPMorgan Chase & Co. (JPM)",
+            "10 day return": 8.635164307987536,
+            "30 day return": 10.176775867661378
+        },
+        {
+            "stock": "Apple Inc. (AAPL)",
+            "10 day return": -0.03054367745878166,
+            "30 day return": 13.675436311539451
+        },
+        {
+            "stock": "Walgreens Boots Alliance, Inc. (WBA)",
+            "10 day return": 13.518936543767246,
+            "30 day return": 17.497403946002063
+        }
+    ]
+}
