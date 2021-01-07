@@ -45,12 +45,23 @@
 					<header>
 						<h2>Finance Guy</h2>
 					</header>
-					<p>Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscin sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu, erisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante.</p>
+					<p>Click the button of the index you would like to view. To order your results, click a sorting method, and then click the button of the index again. To order by ascending descending, click the desired button and then the index button again.</p>
 					<ul class="actions">
 						<li><a class="button alt" onClick="createSandPStocksTable();">S&P 500</a></li>
 						<li><a class="button alt" onClick="createDOWStocksTable();">DOW JONES</a></li>
 						<li><a class="button alt" onClick="createJamesCurStocksTable();">James Stocks</a></li>
 					</ul>
+					<ul class="actions">
+						<li><a class="button" onClick="setAscending();">High -> Low</a></li>
+						<li><a class="button" onClick="setDescending();">Low -> High</a></li>
+						
+					</ul>
+					<ul class="actions">
+						<li><a class="button" onClick="setStock();">By Name</a></li>
+						<li><a class="button" onClick="set10DayReturn();">10 Day Return</a></li>
+						<li><a class="button" onClick="set30DayReturn();">30 Day Return</a></li>
+					</ul>
+					
 				</div>
 
 				 <div class="table">	
