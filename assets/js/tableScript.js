@@ -21,8 +21,8 @@ function sortJSON(arr, key, way) {
     });
 }
 // ------ helper functions ------------------
-var sortMethod;
-var sortArrangement;
+var sortMethod = "stock";
+var sortArrangement = "ascending";
 
 function setStock(){
     sortMethod = "stock";

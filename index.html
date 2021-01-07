@@ -46,11 +46,12 @@
 						<h2>Finance Guy</h2>
 					</header>
 					<p>Click the button of the index you would like to view. To order your results, click a sorting method, and then click the button of the index again. To order by ascending descending, click the desired button and then the index button again.</p>
-					<ul class="actions">
-						<li><a class="button alt" onClick="createSandPStocksTable();">S&P 500</a></li>
-						<li><a class="button alt" onClick="createDOWStocksTable();">DOW JONES</a></li>
-						<li><a class="button alt" onClick="createJamesCurStocksTable();">James Stocks</a></li>
+					<ul >
+						<li>High -> Low - sort list from highest returns to smallest returns. For Name, high is z, while low is A (ascii numbers)</li>
+						<li>Low -> High - sort list from smallest returns to highest returns</li>
+						<li>List always starts with HIGH -> LOW, BY NAME buttons selected.</li>
 					</ul>
+					
 					<ul class="actions">
 						<li><a class="button" onClick="setAscending();">High -> Low</a></li>
 						<li><a class="button" onClick="setDescending();">Low -> High</a></li>
@@ -60,6 +61,11 @@
 						<li><a class="button" onClick="setStock();">By Name</a></li>
 						<li><a class="button" onClick="set10DayReturn();">10 Day Return</a></li>
 						<li><a class="button" onClick="set30DayReturn();">30 Day Return</a></li>
+					</ul>
+					<ul class="actions">
+						<li><a class="button alt" onClick="createSandPStocksTable();">S&P 500</a></li>
+						<li><a class="button alt" onClick="createDOWStocksTable();">DOW JONES</a></li>
+						<li><a class="button alt" onClick="createJamesCurStocksTable();">James Stocks</a></li>
 					</ul>
 					
 				</div>
